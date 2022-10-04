@@ -1,13 +1,18 @@
 const express = require('express')
 const cors = require('cors')
+const { dbConnection } = require('../db/config')
 
 class Server {
     constructor() {
         this.app = express()
         this.port = process.env.PORT
         this.usuariosPath = '/api/usuarios'
+        this.conectarDB()
         this.middlewares()
         this.routes()
+    }
+    async conectarDB() {
+        await dbConnection()
     }
     middlewares() {
         this.app.use(cors())
@@ -18,7 +23,7 @@ class Server {
         this.app.use(this.usuariosPath, require('../routes/usuarios'))
     }
     listen() {
-        this.app.listen(this.port, () => console.log(`RESTSERVER listening at ${this.port}`))
+        this.app.listen(this.port, () => console.log(`REST - SERVER listening at ${this.port}`))
     }
 }
 module.exports = Server
