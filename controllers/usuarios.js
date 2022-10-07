@@ -3,12 +3,23 @@ const bcrypt = require('bcryptjs')
 const Usuario = require('../models/usuario')
 
 const usuariosGet = async (req = request, res = response) => {
-    const { desde, limite } = req.query
-    if (!isNaN(desde) && !isNaN(limite)) {
-        const usuarios = await Usuario.find().skip(Number(desde)).limit(Number(limite))
-        const total = await Usuario.countDocuments()
-        res.json({ total, usuarios })
-    }
+    const { desde = 0, limite = 5 } = req.query
+    const query = { estado: true }
+    // if (desde === 0 && limite === 0) {
+    //     const usuarios = await Usuario.find(query)
+    //     const total = await Usuario.countDocuments(query)
+    //     res.json({ total, usuarios })
+    // } else {
+    //     if (isNaN(limite)) res.status(400).send('El límite no es un número.')
+    //     const usuarios = await Usuario.find(query).limit(Number(limite))
+    //     const total = usuarios.length
+    //     res.json({ total, usuarios })
+    // }
+    const [total, usuarios] = await Promise.all([
+        Usuario.countDocuments(query),
+        Usuario.find(query).skip(Number(desde)).limit(Number(limite))
+    ])
+    res.json({ total, usuarios })
 }
 const usuariosPost = async (req, res = response) => {
     const { nombre, correo, password, rol } = req.body
@@ -28,10 +39,10 @@ const usuariosPut = async (req, res = response) => {
     const usuarioDB = await Usuario.findByIdAndUpdate(id, resto)
     res.json(usuarioDB)
 }
-const usuariosPatch = (req, res = response) => {
-
-}
-const usuariosDelete = (req, res = response) => {
-
+const usuariosDelete = async (req, res = response) => {
+    const { id } = req.params
+    // const usuario = await Usuario.findByIdAndDelete(id)
+    const usuario = await Usuario.findByIdAndUpdate(id, { estado: false })
+    res.json(usuario)
 }
 module.exports = { usuariosGet, usuariosPost, usuariosPut, usuariosPatch, usuariosDelete }
