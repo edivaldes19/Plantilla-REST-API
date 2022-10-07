@@ -3,23 +3,20 @@ const bcrypt = require('bcryptjs')
 const Usuario = require('../models/usuario')
 
 const usuariosGet = async (req = request, res = response) => {
-    const { desde = 0, limite = 5 } = req.query
+    const { limite = 0 } = req.query
     const query = { estado: true }
-    // if (desde === 0 && limite === 0) {
-    //     const usuarios = await Usuario.find(query)
-    //     const total = await Usuario.countDocuments(query)
-    //     res.json({ total, usuarios })
-    // } else {
-    //     if (isNaN(limite)) res.status(400).send('El límite no es un número.')
-    //     const usuarios = await Usuario.find(query).limit(Number(limite))
-    //     const total = usuarios.length
-    //     res.json({ total, usuarios })
-    // }
-    const [total, usuarios] = await Promise.all([
-        Usuario.countDocuments(query),
-        Usuario.find(query).skip(Number(desde)).limit(Number(limite))
-    ])
-    res.json({ total, usuarios })
+    if (limite === 0) {
+        const [total, usuarios] = await Promise.all([
+            Usuario.countDocuments(query),
+            Usuario.find(query)
+        ])
+        res.json({ total, usuarios })
+    } else {
+        if (isNaN(limite)) res.status(400).send('El límite no es un número.')
+        const usuarios = await Usuario.find(query).limit(Number(limite))
+        const total = usuarios.length
+        res.json({ total, usuarios })
+    }
 }
 const usuariosPost = async (req, res = response) => {
     const { nombre, correo, password, rol } = req.body
