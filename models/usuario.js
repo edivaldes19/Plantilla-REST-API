@@ -1,22 +1,25 @@
 const { Schema, model } = require('mongoose')
+
 const UsuarioSchema = Schema({
     nombre: {
         type: String,
-        required: [true, 'El Nombre es obligatorio.']
+        required: [true, 'El nombre es obligatorio.']
     },
     correo: {
         type: String,
-        required: [true, 'El Correo Electrónico es obligatorio.'],
+        required: [true, 'El correo electrónico es obligatorio.'],
         unique: true
     },
     password: {
         type: String,
-        required: [true, 'La Contraseña es obligatoria.']
+        required: [true, 'La contraseña es obligatoria.'],
     },
-    img: { type: String },
+    img: { type: String, },
     rol: {
         type: String,
-        required: true
+        required: true,
+        default: 'USER_ROL',
+        enum: ['ADMIN_ROL', 'USER_ROL', 'VENTAS_ROL']
     },
     estado: {
         type: Boolean,

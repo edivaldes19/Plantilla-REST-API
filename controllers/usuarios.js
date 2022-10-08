@@ -33,13 +33,12 @@ const usuariosPut = async (req, res = response) => {
         const salt = bcrypt.genSaltSync()
         resto.password = bcrypt.hashSync(password, salt)
     }
-    const usuarioDB = await Usuario.findByIdAndUpdate(id, resto)
-    res.json({ usuarioDB })
+    const usuario = await Usuario.findByIdAndUpdate(id, resto)
+    res.json(usuario)
 }
 const usuariosDelete = async (req, res = response) => {
     const { id } = req.params
     const usuario = await Usuario.findByIdAndUpdate(id, { estado: false })
-    const usuarioAutenticado = req.usuario
-    res.json({ usuario, usuarioAutenticado })
+    res.json(usuario)
 }
 module.exports = { usuariosGet, usuariosPost, usuariosPut, usuariosDelete }
