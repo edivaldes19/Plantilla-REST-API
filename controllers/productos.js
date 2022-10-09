@@ -1,6 +1,5 @@
-const { response } = require("express")
+const { response, request } = require("express")
 const { Producto } = require('../models')
-
 const productosGet = async (req = request, res = response) => {
     const { limite = 0 } = req.query
     const query = { estado: true }
@@ -17,12 +16,12 @@ const productosGet = async (req = request, res = response) => {
         res.json({ total, productos })
     }
 }
-const productosGetByID = async (req, res = response) => {
+const productosGetByID = async (req = request, res = response) => {
     const { id } = req.params
     const producto = await Producto.findById(id).populate('usuario', 'nombre').populate('categoria', 'nombre')
     res.json(producto)
 }
-const productosPost = async (req, res = response) => {
+const productosPost = async (req = request, res = response) => {
     const { estado, usuario, ...bodyReq } = req.body
     const productoDB = await Producto.findOne({ nombre: bodyReq.nombre })
     if (productoDB) return res.status(400).json({ msg: `El producto ${nombre} ya existe.` })
@@ -35,7 +34,7 @@ const productosPost = async (req, res = response) => {
     await producto.save()
     res.status(201).json(producto)
 }
-const productosPut = async (req, res = response) => {
+const productosPut = async (req = request, res = response) => {
     const { id } = req.params
     const { estado, usuario, ...data } = req.body
     if (data.nombre) data.nombre = data.nombre.toUpperCase()
@@ -43,7 +42,7 @@ const productosPut = async (req, res = response) => {
     const producto = await Producto.findByIdAndUpdate(id, data, { new: true })
     res.json(producto)
 }
-const productosDelete = async (req, res = response) => {
+const productosDelete = async (req = request, res = response) => {
     const { id } = req.params
     const producto = await Producto.findByIdAndUpdate(id, { estado: false }, { new: true })
     res.json(producto)

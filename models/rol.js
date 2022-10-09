@@ -5,4 +5,4 @@ const RoleSchema = Schema({
         required: [true, 'El rol es obligatorio.']
     }
 })
-module.exports = model('Role', RoleSchema)
+module.exports = model('Rol', RoleSchema)

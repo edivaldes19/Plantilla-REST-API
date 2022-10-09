@@ -1,9 +1,8 @@
-const { response } = require('express')
+const { response, request } = require('express')
 const bcryptjs = require('bcryptjs')
-const Usuario = require('../models/usuario')
-const { generarJWT } = require('../helpers/generarJWT')
-const { googleVerify } = require('../helpers/google-verify')
-const login = async (req, res = response) => {
+const { Usuario } = require('../models')
+const { generarJWT, googleVerify } = require('../helpers')
+const login = async (req = request, res = response) => {
     const { correo, password } = req.body
     try {
         const usuario = await Usuario.findOne({ correo })
@@ -18,7 +17,7 @@ const login = async (req, res = response) => {
         res.status(500).json({ msg: 'Error al iniciar sesión.' })
     }
 }
-const googleSignIn = async (req, res = response) => {
+const googleSignIn = async (req = request, res = response) => {
     const { id_token } = req.body
     try {
         const { correo, nombre, img } = await googleVerify(id_token)

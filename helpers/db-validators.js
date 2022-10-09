@@ -1,5 +1,4 @@
-const { Usuario, Categoria, Producto } = require('../models')
-const Rol = require('../models/rol')
+const { Usuario, Categoria, Producto, Rol } = require('../models')
 const esRolValido = async (rol = '') => {
     const existeRol = await Rol.findOne({ rol })
     if (!existeRol) throw new Error(`El rol: ${rol} es inválido.`)

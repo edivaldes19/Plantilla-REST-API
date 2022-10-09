@@ -1,5 +1,4 @@
 const { request, response } = require("express")
-
 const esAdminRole = (req = request, res = response, next) => {
     if (!req.usuario) return res.status(500).json({ msg: 'Token sin validación previa a validar el Rol.' })
     const { rol, nombre } = req.usuario

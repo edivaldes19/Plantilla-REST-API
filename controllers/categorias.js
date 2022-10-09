@@ -1,6 +1,5 @@
-const { response } = require("express")
+const { response, request } = require("express")
 const { Categoria } = require('../models')
-
 const categoriasGet = async (req = request, res = response) => {
     const { limite = 0 } = req.query
     const query = { estado: true }
@@ -17,12 +16,12 @@ const categoriasGet = async (req = request, res = response) => {
         res.json({ total, categorias })
     }
 }
-const categoriasGetByID = async (req, res = response) => {
+const categoriasGetByID = async (req = request, res = response) => {
     const { id } = req.params
     const categoria = await Categoria.findById(id).populate('usuario', 'nombre')
     res.json(categoria)
 }
-const categoriasPost = async (req, res = response) => {
+const categoriasPost = async (req = request, res = response) => {
     const nombre = req.body.nombre.toUpperCase()
     const categoriaDB = await Categoria.findOne({ nombre })
     if (categoriaDB) return res.status(400).json({ msg: `La categoría ${nombre} ya existe.` })
@@ -34,7 +33,7 @@ const categoriasPost = async (req, res = response) => {
     await categoria.save()
     res.status(201).json(categoria)
 }
-const categoriasPut = async (req, res = response) => {
+const categoriasPut = async (req = request, res = response) => {
     const { id } = req.params
     const { estado, usuario, ...data } = req.body
     data.nombre = data.nombre.toUpperCase()
@@ -42,7 +41,7 @@ const categoriasPut = async (req, res = response) => {
     const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true })
     res.json(categoria)
 }
-const categoriasDelete = async (req, res = response) => {
+const categoriasDelete = async (req = request, res = response) => {
     const { id } = req.params
     const categoria = await Categoria.findByIdAndUpdate(id, { estado: false }, { new: true })
     res.json(categoria)

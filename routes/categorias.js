@@ -1,9 +1,8 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
-const { categoriasGet, categoriasPost, categoriasGetByID, categoriasPut, categoriasDelete } = require('../controllers/categorias')
-const { categoriaExiste } = require('../helpers/db-validators')
-const { validarJWT, validarCampos, tieneRole, esAdminRole } = require('../middlewares')
-
+const { categoriasGet, categoriasPost, categoriasGetByID, categoriasPut, categoriasDelete } = require('../controllers')
+const { categoriaExiste } = require('../helpers')
+const { validarJWT, validarCampos, esAdminRole } = require('../middlewares')
 const router = Router()
 router.get('/', [validarJWT], categoriasGet)
 router.get('/:id', [
