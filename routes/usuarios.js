@@ -5,8 +5,9 @@ const { usuariosGet, usuariosDelete, usuariosPut, usuariosPost } = require('../c
 const { validarCampos, validarJWT, tieneRole } = require('../middlewares')
 
 const router = Router()
-router.get('/', usuariosGet)
+router.get('/', [validarJWT], usuariosGet)
 router.post('/', [
+    validarJWT,
     check('nombre', 'El nombre es obligatorio.').not().isEmpty(),
     check('password', 'La contraseña es obligatoria y debe contener más de 6 caracteres.').isLength({ min: 6 }),
     check('correo', 'Correo electrónico inválido.').isEmail(),
@@ -15,6 +16,7 @@ router.post('/', [
     validarCampos
 ], usuariosPost)
 router.put('/:id', [
+    validarJWT,
     check('id', 'No es un id válido.').isMongoId(),
     check('id').custom(usuarioExiste),
     check('rol').custom(esRolValido),
