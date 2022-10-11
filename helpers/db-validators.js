@@ -19,4 +19,9 @@ const productoExiste = async (id = '') => {
     const existeProducto = await Producto.findById(id)
     if (!existeProducto) throw new Error(`El id: ${id} no existe.`)
 }
-module.exports = { esRolValido, emailExiste, usuarioExiste, categoriaExiste, productoExiste }
+const coleccionesPermitidas = (coleccion = '', colecciones = []) => {
+    const incluida = colecciones.includes(coleccion)
+    if (!incluida) throw new Error(`Únicamente se admiten estas colecciones: ${colecciones}`)
+    return true
+}
+module.exports = { esRolValido, emailExiste, usuarioExiste, categoriaExiste, productoExiste, coleccionesPermitidas }
