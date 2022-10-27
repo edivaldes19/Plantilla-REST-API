@@ -2,10 +2,14 @@ const express = require('express')
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const { dbConnection } = require('../db/config')
+const { createServer } = require('http')
+const { socketController } = require('../socket/socket-controller')
 class Server {
     constructor() {
         this.app = express()
         this.port = process.env.PORT
+        this.server = createServer(this.app)
+        this.io = require('socket.io')(this.server)
         this.paths = {
             auth: '/api/auth',
             buscar: '/api/buscar',
@@ -17,6 +21,7 @@ class Server {
         this.conectarDB()
         this.middlewares()
         this.routes()
+        this.sockets()
     }
     async conectarDB() {
         await dbConnection()
@@ -39,8 +44,11 @@ class Server {
         this.app.use(this.paths.uploads, require('../routes/uploads'))
         this.app.use(this.paths.usuarios, require('../routes/usuarios'))
     }
+    sockets() {
+        this.io.on('connection', (socket) => socketController(socket, this.io))
+    }
     listen() {
-        this.app.listen(this.port, () => console.log(`REST - SERVER listening at ${this.port}`))
+        this.server.listen(this.port, () => console.log(`REST - SERVER listening at ${this.port}`))
     }
 }
 module.exports = Server

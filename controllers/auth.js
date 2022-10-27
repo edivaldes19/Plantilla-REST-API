@@ -33,11 +33,16 @@ const googleSignIn = async (req = request, res = response) => {
             usuario = new Usuario(data)
             await usuario.save()
         }
-        if (!usuario.estado) return res.status(401).json({ msg: 'Usuario eliminado.' })
+        if (!usuario.estado) return res.status(401).json({ msg: 'El usuario ya ha sido eliminado.' })
         const token = await generarJWT(usuario.id)
         res.json({ usuario, token })
     } catch (error) {
         res.status(400).json({ msg: 'Token de Google inválido.' })
     }
 }
-module.exports = { login, googleSignIn }
+const renovarToken = async (req = request, res = response) => {
+    const { usuario } = req
+    const token = await generarJWT(usuario.id)
+    res.json({ usuario, token })
+}
+module.exports = { login, googleSignIn, renovarToken }
